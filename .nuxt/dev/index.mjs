@@ -5,7 +5,6 @@ import nodeCrypto from 'node:crypto';
 import { parentPort, threadId } from 'node:worker_threads';
 import { defineEventHandler, handleCacheHeaders, splitCookiesString, createEvent, fetchWithEvent, isEvent, eventHandler, setHeaders, sendRedirect, proxyRequest, getRequestHeader, setResponseHeaders, setResponseStatus, send, getRequestHeaders, setResponseHeader, appendResponseHeader, getRequestURL, getResponseHeader, removeResponseHeader, createError, getQuery as getQuery$1, readBody, createApp, createRouter as createRouter$1, toNodeListener, lazyEventHandler, getResponseStatus, getRouterParam, getResponseStatusText } from 'file://E:/jewelary-app/node_modules/h3/dist/index.mjs';
 import { escapeHtml } from 'file://E:/jewelary-app/node_modules/@vue/shared/dist/shared.cjs.js';
-import fs, { promises } from 'node:fs';
 import { PrismaClient } from 'file://E:/jewelary-app/node_modules/@prisma/client/default.js';
 import { createRenderer, getRequestDependencies, getPreloadLinks, getPrefetchLinks } from 'file://E:/jewelary-app/node_modules/vue-bundle-renderer/dist/runtime.mjs';
 import { parseURL, withoutBase, joinURL, getQuery, withQuery, withTrailingSlash, decodePath, withLeadingSlash, withoutTrailingSlash, joinRelativeURL } from 'file://E:/jewelary-app/node_modules/ufo/dist/index.mjs';
@@ -33,6 +32,7 @@ import { SourceMapConsumer } from 'file://E:/jewelary-app/node_modules/source-ma
 import { AsyncLocalStorage } from 'node:async_hooks';
 import { getContext } from 'file://E:/jewelary-app/node_modules/unctx/dist/index.mjs';
 import { captureRawStackTrace, parseRawStackTrace } from 'file://E:/jewelary-app/node_modules/errx/dist/index.js';
+import { promises } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname as dirname$1, resolve as resolve$1 } from 'file://E:/jewelary-app/node_modules/pathe/dist/index.mjs';
 import { walkResolver } from 'file://E:/jewelary-app/node_modules/unhead/dist/utils.mjs';
@@ -2136,16 +2136,16 @@ _VycZrzKrZoiFO2f6u_bzaWXsW2SEy8Xz9WPxZPMEvF8
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"1d21b-YjlnFeG3e+qsYNj1Rb2DPT34ucg\"",
-    "mtime": "2026-01-24T10:47:27.766Z",
-    "size": 119323,
+    "etag": "\"1d810-69fNVBaEPJ1BHR16I+II7c3P70Y\"",
+    "mtime": "2026-01-24T10:58:39.827Z",
+    "size": 120848,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"76cb5-+yxQscinUGZXx9L6z7gZz3XYDGY\"",
-    "mtime": "2026-01-24T10:47:27.766Z",
-    "size": 486581,
+    "etag": "\"776c4-4zRgSepCg0Swy2Zaq5nHoOzJmNE\"",
+    "mtime": "2026-01-24T10:58:39.827Z",
+    "size": 489156,
     "path": "index.mjs.map"
   }
 };
@@ -3319,8 +3319,7 @@ global.prisma = prisma$1;
 
 const create_post$2 = defineEventHandler(async (event) => {
   const body = await readBody(event);
-  fs.appendFileSync("server-log.txt", `[${(/* @__PURE__ */ new Date()).toISOString()}] Request: ${JSON.stringify(body)}
-`);
+  console.log(`[${(/* @__PURE__ */ new Date()).toISOString()}] Request:`, body);
   const { setName, labourPerSet, setImageUrl, notes, motiRequirements, colours } = body;
   try {
     const calculation = await prisma$1.calculation.create({
@@ -3362,9 +3361,6 @@ const create_post$2 = defineEventHandler(async (event) => {
     });
     return calculation;
   } catch (error) {
-    fs.appendFileSync("server-log.txt", `[${(/* @__PURE__ */ new Date()).toISOString()}] Error: ${error.message}
-${error.stack}
-`);
     console.error("Prisma Create Error:", error);
     throw createError({
       statusCode: 500,

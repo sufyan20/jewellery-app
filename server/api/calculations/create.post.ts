@@ -1,10 +1,10 @@
 import { defineEventHandler, readBody, createError } from 'h3'
 import prisma from '~/server/utils/prisma'
-import fs from 'fs'
+
 
 export default defineEventHandler(async (event) => {
     const body = await readBody(event)
-    fs.appendFileSync('server-log.txt', `[${new Date().toISOString()}] Request: ${JSON.stringify(body)}\n`)
+    console.log(`[${new Date().toISOString()}] Request:`, body)
     const { setName, labourPerSet, setImageUrl, notes, motiRequirements, colours } = body
 
     try {
@@ -48,7 +48,7 @@ export default defineEventHandler(async (event) => {
 
         return calculation
     } catch (error: any) {
-        fs.appendFileSync('server-log.txt', `[${new Date().toISOString()}] Error: ${error.message}\n${error.stack}\n`)
+
         console.error('Prisma Create Error:', error)
         throw createError({
             statusCode: 500,
