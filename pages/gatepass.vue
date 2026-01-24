@@ -39,7 +39,6 @@
         <div v-if="gatePass" id="gatePassAnchor" class="gate-pass-preview border border-2 border-primary rounded-4 p-4 p-md-5 bg-white shadow-sm mt-4">
           <div class="text-center border-bottom border-2 border-primary pb-4 mb-4">
             <img src="../public/logo.png" style="height: 50px; margin-bottom: 10px;">
-            <h2 class="text-primary fw-bold">AL HAYAT JEWELER</h2>
             <div class="text-muted small">GATE PASS | ID: {{ gatePass.passNumber }}</div>
           </div>
 

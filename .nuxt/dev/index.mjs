@@ -2133,7 +2133,22 @@ const plugins = [
 _VycZrzKrZoiFO2f6u_bzaWXsW2SEy8Xz9WPxZPMEvF8
 ];
 
-const assets = {};
+const assets = {
+  "/index.mjs": {
+    "type": "text/javascript; charset=utf-8",
+    "etag": "\"1d21b-YjlnFeG3e+qsYNj1Rb2DPT34ucg\"",
+    "mtime": "2026-01-24T10:47:27.766Z",
+    "size": 119323,
+    "path": "index.mjs"
+  },
+  "/index.mjs.map": {
+    "type": "application/json",
+    "etag": "\"76cb5-+yxQscinUGZXx9L6z7gZz3XYDGY\"",
+    "mtime": "2026-01-24T10:47:27.766Z",
+    "size": 486581,
+    "path": "index.mjs.map"
+  }
+};
 
 function readAsset (id) {
   const serverDir = dirname$1(fileURLToPath(globalThis._importMeta_.url));
@@ -2584,6 +2599,8 @@ async function getIslandContext(event) {
 
 const _HBoP3_Meta = null;
 
+const _VnMu5jMeta = null;
+
 const _bjME_cMeta = null;
 
 const _ARAI4rMeta = null;
@@ -2600,6 +2617,7 @@ const _toJP4_Meta = null;
 
 const handlersMeta = [
   { route: "/api/calculations/create", method: "post", meta: _HBoP3_Meta },
+{ route: "/api/calculations/delete", method: "delete", meta: _VnMu5jMeta },
 { route: "/api/calculations", method: "get", meta: _bjME_cMeta },
 { route: "/api/gatepass/create", method: "post", meta: _ARAI4rMeta },
 { route: "/__nuxt_error", method: undefined, meta: _CMMjDoMeta },
@@ -2940,6 +2958,7 @@ const _toJP4_ = eventHandler((event) => {
 });
 
 const _lazy_HBoP3_ = () => Promise.resolve().then(function () { return create_post$3; });
+const _lazy_VnMu5j = () => Promise.resolve().then(function () { return delete_delete$1; });
 const _lazy_bjME_c = () => Promise.resolve().then(function () { return index_get$1; });
 const _lazy_ARAI4r = () => Promise.resolve().then(function () { return create_post$1; });
 const _lazy_CMMjDo = () => Promise.resolve().then(function () { return renderer$1; });
@@ -2947,6 +2966,7 @@ const _lazy_CMMjDo = () => Promise.resolve().then(function () { return renderer$
 const handlers = [
   { route: '', handler: _cVb9pE, lazy: false, middleware: true, method: undefined },
   { route: '/api/calculations/create', handler: _lazy_HBoP3_, lazy: true, middleware: false, method: "post" },
+  { route: '/api/calculations/delete', handler: _lazy_VnMu5j, lazy: true, middleware: false, method: "delete" },
   { route: '/api/calculations', handler: _lazy_bjME_c, lazy: true, middleware: false, method: "get" },
   { route: '/api/gatepass/create', handler: _lazy_ARAI4r, lazy: true, middleware: false, method: "post" },
   { route: '/__nuxt_error', handler: _lazy_CMMjDo, lazy: true, middleware: false, method: undefined },
@@ -3294,8 +3314,8 @@ const styles$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   default: styles
 }, Symbol.toStringTag, { value: 'Module' }));
 
-const prisma = global.prisma || new PrismaClient();
-global.prisma = prisma;
+const prisma$1 = global.prisma || new PrismaClient();
+global.prisma = prisma$1;
 
 const create_post$2 = defineEventHandler(async (event) => {
   const body = await readBody(event);
@@ -3303,7 +3323,7 @@ const create_post$2 = defineEventHandler(async (event) => {
 `);
   const { setName, labourPerSet, setImageUrl, notes, motiRequirements, colours } = body;
   try {
-    const calculation = await prisma.calculation.create({
+    const calculation = await prisma$1.calculation.create({
       data: {
         setName: setName || "Unnamed Set",
         labourPerSet: parseFloat(labourPerSet) || 0,
@@ -3358,9 +3378,40 @@ const create_post$3 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.definePrope
   default: create_post$2
 }, Symbol.toStringTag, { value: 'Module' }));
 
+const prisma = new PrismaClient();
+const delete_delete = defineEventHandler(async (event) => {
+  const query = getQuery$1(event);
+  const id = query.id;
+  if (!id) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: "Missing ID parameter"
+    });
+  }
+  try {
+    const deletedCalculation = await prisma.calculation.delete({
+      where: {
+        id
+      }
+    });
+    return { success: true, id: deletedCalculation.id };
+  } catch (error) {
+    console.error("Delete error:", error);
+    throw createError({
+      statusCode: 500,
+      statusMessage: "Failed to delete calculation"
+    });
+  }
+});
+
+const delete_delete$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: delete_delete
+}, Symbol.toStringTag, { value: 'Module' }));
+
 const index_get = defineEventHandler(async (event) => {
   try {
-    const calculations = await prisma.calculation.findMany({
+    const calculations = await prisma$1.calculation.findMany({
       orderBy: {
         createdAt: "desc"
       },
@@ -3392,7 +3443,7 @@ const create_post = defineEventHandler(async (event) => {
   const body = await readBody(event);
   const { passNumber, customerName, calculationId } = body;
   try {
-    const gatePass = await prisma.gatePass.create({
+    const gatePass = await prisma$1.gatePass.create({
       data: {
         passNumber,
         customerName,

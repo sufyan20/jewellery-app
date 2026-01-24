@@ -38,10 +38,11 @@
                 <div class="display-6 h5 fw-bold text-primary mb-3">
                   Rs {{ calculateGrandTotal(calc).toLocaleString() }}
                 </div>
-                <div class="d-grid gap-2">
-                  <button @click="viewCalculation(calc)" class="btn btn-sm btn-outline-primary">View Details</button>
-                  <button @click="generateGatePass(calc)" class="btn btn-sm btn-success">Generate Gate Pass</button>
-                </div>
+                  <div class="d-flex gap-2 mb-2">
+                    <button @click="viewCalculation(calc)" class="btn btn-sm btn-outline-primary flex-grow-1">View</button>
+                    <button @click="deleteCalculation(calc.id)" class="btn btn-sm btn-outline-danger" title="Delete">🗑️</button>
+                  </div>
+                  <button @click="generateGatePass(calc)" class="btn btn-sm btn-success w-100">Generate Gate Pass</button>
               </div>
             </div>
           </div>
@@ -53,7 +54,22 @@
 
 <script setup>
 const isDarkMode = inject('isDarkMode')
-const { data: calculations, pending, error } = useFetch('/api/calculations')
+const { data: calculations, pending, error, refresh } = useFetch('/api/calculations')
+
+const deleteCalculation = async (id) => {
+  if (!confirm('Are you sure you want to delete this calculation? This cannot be undone.')) return
+
+  try {
+    await $fetch(`/api/calculations/delete?id=${id}`, {
+      method: 'DELETE'
+    })
+    // Refresh the list locally
+    await refresh()
+  } catch (err) {
+    alert('Failed to delete calculation')
+    console.error(err)
+  }
+}
 
 const calculateGrandTotal = (calc) => {
   let total = 0

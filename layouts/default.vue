@@ -1,6 +1,6 @@
 <template>
   <div :class="['min-vh-100', isDarkMode ? 'bg-dark text-white' : 'bg-light']">
-    <nav :class="['navbar navbar-expand-lg border-bottom py-3', isDarkMode ? 'navbar-dark bg-dark border-secondary' : 'navbar-dark bg-primary shadow-sm border-0']">
+    <nav :class="['navbar navbar-expand-lg border-bottom py-3 no-print', isDarkMode ? 'navbar-dark bg-dark border-secondary' : 'navbar-dark bg-primary shadow-sm border-0']">
       <div class="container">
         <NuxtLink class="navbar-brand fw-bold d-flex align-items-center" to="/">
           <img src="/logo.png" alt="Logo" class="me-2" style="height: 30px;">
@@ -36,7 +36,7 @@
       <slot />
     </main>
 
-    <footer :class="['py-4 text-center small mt-auto', isDarkMode ? 'text-secondary border-top border-secondary' : 'text-muted']">
+    <footer :class="['py-4 text-center small mt-auto no-print', isDarkMode ? 'text-secondary border-top border-secondary' : 'text-muted']">
       &copy; {{ new Date().getFullYear() }} Diamond Jewelery Calculator App.
     </footer>
   </div>

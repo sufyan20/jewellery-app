@@ -3,7 +3,6 @@
     <div class="row g-4 justify-content-center">
       <div class="col-md-8 col-lg-6 text-center mb-4">
         <img src="../public/logo.png" alt="Al hayat Logo" class="mb-3" style="height: 80px;">
-        <h1 class="display-5 fw-bold text-primary mb-3">Al Hayat Jeweler</h1>
         <p class="lead text-muted">Luxury Jewelry Calculation & POS Management</p>
       </div>
     </div>

@@ -1,17 +1,14 @@
 <template>
   <div class="container px-2 py-3 px-md-3 py-md-4">
     <div class="card border-0 shadow-lg rounded-4 overflow-hidden" :class="isDarkMode ? 'bg-dark-card border-secondary' : 'bg-white'">
-      <div class="card-header border-0 p-4 text-center" :class="isDarkMode ? 'bg-secondary text-white' : 'bg-primary text-white'">
-        <div class="d-flex align-items-center justify-content-center mb-2">
-          <img src="../public/logo.png" alt="Al hayat Logo" class="me-2" style="height: 40px;">
-          <h1 class="h3 mb-0">Al Hayat Jeweler</h1>
-        </div>
-        <p class="mb-0 small opacity-75">Professional Moti Calculation System</p>
+      <div class="card-header border-0 bg-transparent pt-4 pb-2 text-center no-print">
+        <h2 class="h4 fw-bold mb-1 text-primary">Moti Calculation</h2>
+        <p class="small text-muted">Create a new estimation</p>
       </div>
 
       <div class="card-body p-2 p-md-4">
         <!-- SET INFO -->
-        <div class="card border-0 shadow-sm mb-4">
+        <div class="card border-0 shadow-sm mb-4 no-print">
           <div class="card-body">
             <h3 class="h5 border-bottom pb-2 mb-3">⚙️ Set Information</h3>
             <div class="row g-3">
@@ -69,7 +66,7 @@
         </div>
 
         <!-- COLOURS -->
-        <div class="card border-0 shadow-sm mb-4">
+        <div class="card border-0 shadow-sm mb-4 no-print">
           <div class="card-body">
             <h3 class="h5 border-bottom pb-2 mb-3">🎨 Colours & Quantities</h3>
             <div v-for="(colour, cIndex) in calculation.colours" :key="cIndex" class="mb-4 border rounded-3 p-3">
@@ -134,7 +131,6 @@
           <!-- Print Only Header -->
           <div class="print-header d-none">
             <img src="../public/logo.png" style="height: 60px; margin-bottom: 10px;">
-            <h2 class="h3 fw-bold">Al Hayat Jeweler</h2>
             <p class="mb-0 small">Moti Calculation Report</p>
             <hr>
             <div class="d-flex justify-content-between mb-4 mt-2">
@@ -260,15 +256,38 @@ const removeCustomMoti = (cIndex, mIndex) => {
   calculation.value.colours[cIndex].customMoti.splice(mIndex, 1)
 }
 
-const handleImageUpload = async (e) => {
+const handleImageUpload = (e) => {
   const file = e.target.files[0]
   if (!file) return
-  
-  // Real implementation would upload to Cloudinary
-  // For now, we'll use a data URL
+
   const reader = new FileReader()
   reader.onload = (event) => {
-    calculation.value.setImageUrl = event.target.result
+    const img = new Image()
+    img.onload = () => {
+      const canvas = document.createElement('canvas')
+      let width = img.width
+      let height = img.height
+      const maxWidth = 700
+      const maxHeight = 500
+
+      if (width > maxWidth) {
+        height = Math.round((height * maxWidth) / width)
+        width = maxWidth
+      }
+      if (height > maxHeight) {
+        width = Math.round((width * maxHeight) / height)
+        height = maxHeight
+      }
+
+      canvas.width = width
+      canvas.height = height
+      const ctx = canvas.getContext('2d')
+      ctx.drawImage(img, 0, 0, width, height)
+      
+      // Save as compressed JPEG
+      calculation.value.setImageUrl = canvas.toDataURL('image/jpeg', 0.8)
+    }
+    img.src = event.target.result
   }
   reader.readAsDataURL(file)
 }
@@ -381,76 +400,68 @@ const resetForm = () => {
 }
 
 @media print {
-  /* Hide everything except results */
-  body * {
-    visibility: hidden !important;
+  .no-print {
+    display: none !important;
   }
   
-  /* Show only the results container and its contents */
-  .results-container,
-  .results-container * {
-    visibility: visible !important;
+  body, html {
+    background: white !important;
+    height: auto !important;
+    overflow: visible !important;
   }
-  
-  .print-header,
-  .print-header * {
-    visibility: visible !important;
+
+  /* Hide headers/footers from layout */
+  header, footer, nav, .navbar {
+    display: none !important;
   }
-  
-  /* Position results at top of page */
+
+  /* Ensure results are visible and styled for print */
   .results-container {
-    position: absolute !important;
-    left: 0 !important;
-    top: 0 !important;
-    width: 100% !important;
-    padding: 20px !important;
-  }
-  
-  /* Show the print header */
-  .print-header {
     display: block !important;
-  }
-  
-  /* Clean up appearance */
-  body {
+    position: relative !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 20px !important;
     background: white !important;
     color: black !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  .print-header {
+    display: block !important;
+    margin-bottom: 20px;
   }
   
   .card {
     border: 1px solid #ddd !important;
     box-shadow: none !important;
-    background-color: white !important;
+    margin-bottom: 15px !important;
+    break-inside: avoid;
+  }
+  
+  .h4, .h5, .h6 {
     color: black !important;
-    page-break-inside: avoid;
   }
   
   .table {
-    border-collapse: collapse !important;
     width: 100% !important;
-    color: black !important;
+    border-collapse: collapse !important;
   }
   
-  .table th,
-  .table td {
-    border: 1px solid #000 !important;
+  .table th, .table td {
+    border: 1px solid #ccc !important;
     padding: 8px !important;
     color: black !important;
   }
   
-  .text-primary,
-  .text-success,
-  .text-warning {
+  .text-primary {
     color: black !important;
   }
   
-  .bg-primary {
-    background-color: #f8f9fa !important;
-    color: black !important;
-    border: 2px solid #000 !important;
-  }
-  
-  h1, h2, h3, h4, h5, h6 {
+  /* Reset dark mode for print */
+  .bg-dark-card, .bg-secondary {
+    background-color: white !important;
     color: black !important;
   }
 }
