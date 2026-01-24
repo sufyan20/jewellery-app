@@ -1,0 +1,1 @@
+export { default } from "file:///E:/jewelary-app/node_modules/@nuxt/vite-builder/dist/vite-node-entry.mjs"

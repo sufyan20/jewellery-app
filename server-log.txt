@@ -1,0 +1,2 @@
+[2026-01-23T09:15:10.255Z] Request: {"setName":"Tewst","labourPerSet":5,"setImageUrl":null,"notes":"tetsing nre asfklasnkfnadjkfDKF Afs fjka","motiRequirements":[{"type":"dasdasf","lariPerSet":5,"ratePerLari":5}],"colours":[{"name":"red","qty":5,"hasCustom":false,"customMoti":[]}]}
+[2026-01-23T11:51:01.423Z] Request: {"setName":"Test","labourPerSet":4,"setImageUrl":null,"notes":"test description","motiRequirements":[{"type":"test","lariPerSet":3,"ratePerLari":4}],"colours":[{"name":"red","qty":4,"hasCustom":false,"customMoti":[]}]}

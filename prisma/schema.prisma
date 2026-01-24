@@ -1,0 +1,81 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Calculation {
+  id            String   @id @default(cuid())
+  setName       String
+  labourPerSet  Float
+  setImageUrl   String?
+  notes         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Standard moti types applied to colors without custom settings
+  motiRequirements MotiRequirement[]
+  
+  // Colours in this calculation
+  colours          Colour[]
+  
+  // Potential gate passes generated from this
+  gatePasses       GatePass[]
+}
+
+model Colour {
+  id             String      @id @default(cuid())
+  name           String
+  qty            Int
+  hasCustom      Boolean     @default(false)
+  calculationId  String
+  calculation    Calculation @relation(fields: [calculationId], references: [id], onDelete: Cascade)
+
+  // Custom moti settings for this specific colour
+  customMotis    MotiRequirement[]
+  
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+}
+
+model MotiRequirement {
+  id             String      @id @default(cuid())
+  type           String
+  lariPerSet     Float
+  ratePerLari    Float
+  
+  // Either linked to calculation (standard) OR to a specific colour (custom)
+  calculationId  String?
+  calculation    Calculation? @relation(fields: [calculationId], references: [id], onDelete: Cascade)
+  
+  colourId       String?
+  colour         Colour?      @relation(fields: [colourId], references: [id], onDelete: Cascade)
+
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
+
+model GatePass {
+  id             String      @id @default(cuid())
+  passNumber     String      @unique
+  customerName   String?
+  date           DateTime    @default(now())
+  
+  calculationId  String
+  calculation    Calculation @relation(fields: [calculationId], references: [id])
+
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+}

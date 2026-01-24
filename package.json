@@ -1,0 +1,29 @@
+{
+  "name": "jewelary-app",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "prisma generate && nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "prisma generate && nuxt prepare"
+  },
+  "dependencies": {
+    "@popperjs/core": "^2.11.8",
+    "@prisma/client": "^5.22.0",
+    "@vite-pwa/nuxt": "^1.1.0",
+    "bcryptjs": "^3.0.3",
+    "bootstrap": "^5.3.3",
+    "cloudinary": "^2.9.0",
+    "nuxt": "^3.11.0",
+    "prisma": "^5.22.0",
+    "vue": "^3.4.21",
+    "vue-router": "^4.3.0",
+    "workbox-window": "^7.0.0"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/node": "^25.0.10"
+  }
+}
