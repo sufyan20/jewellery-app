@@ -13,25 +13,32 @@ export default defineNuxtConfig({
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' }
+      ],
+      link: [
+        { rel: 'icon', type: 'image/png', href: '/logo.png' },
+        { rel: 'apple-touch-icon', href: '/logo.png' }
       ]
     }
   },
   pwa: {
+    registerType: 'autoUpdate',
     manifest: {
       name: 'Al Halat Jewelers POS',
       short_name: 'AlHalat',
       description: 'Jewelery calculation and inventory management app',
-      theme_color: '#4776E6',
+      theme_color: '#C5A059',
       background_color: '#ffffff',
       display: 'standalone',
+      start_url: '/',
+      scope: '/',
       icons: [
         {
-          src: 'logo.png',
+          src: '/logo.png',
           sizes: '192x192',
           type: 'image/png'
         },
         {
-          src: 'logo.png',
+          src: '/logo.png',
           sizes: '512x512',
           type: 'image/png'
         }
@@ -39,6 +46,9 @@ export default defineNuxtConfig({
     },
     workbox: {
       navigateFallback: '/'
+    },
+    client: {
+      installPrompt: true,
     }
   },
   runtimeConfig: {

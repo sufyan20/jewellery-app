@@ -1,9 +1,10 @@
 <template>
   <div :class="['min-vh-100', isDarkMode ? 'bg-dark text-white' : 'bg-light']">
-    <nav :class="['navbar navbar-expand-lg border-bottom py-3 no-print', isDarkMode ? 'navbar-dark bg-dark border-secondary' : 'navbar-dark bg-primary shadow-sm border-0']">
+    <nav :class="['navbar navbar-expand-lg border-bottom py-3 no-print', isDarkMode ? 'navbar-dark bg-dark border-secondary' : 'navbar-light bg-white border-bottom border-warning-subtle']">
       <div class="container">
-        <NuxtLink class="navbar-brand fw-bold d-flex align-items-center" to="/">
+        <NuxtLink class="navbar-brand fw-bold d-flex align-items-center text-primary" to="/">
           <img src="/logo.png" alt="Logo" class="me-2" style="height: 30px;">
+          <span>Al Halat</span>
         </NuxtLink>
         <button class="navbar-toggler" type="button" @click="isNavOpen = !isNavOpen" :aria-expanded="isNavOpen">
           <span class="navbar-toggler-icon"></span>
@@ -11,16 +12,16 @@
         <div class="collapse navbar-collapse" :class="{ 'show': isNavOpen }" id="navbarNav">
           <ul class="navbar-nav ms-auto align-items-center">
             <li class="nav-item">
-              <NuxtLink class="nav-link" to="/calculator/new" active-class="active" @click="isNavOpen = false">Calculator</NuxtLink>
+              <NuxtLink class="nav-link" to="/calculator/new" active-class="active fw-bold text-primary" @click="isNavOpen = false">Calculator</NuxtLink>
             </li>
             <li class="nav-item">
-              <NuxtLink class="nav-link" to="/history" active-class="active" @click="isNavOpen = false">History</NuxtLink>
+              <NuxtLink class="nav-link" to="/history" active-class="active fw-bold text-primary" @click="isNavOpen = false">History</NuxtLink>
             </li>
             <li class="nav-item">
-              <NuxtLink class="nav-link" to="/gatepass" active-class="active" @click="isNavOpen = false">Gate Pass</NuxtLink>
+              <NuxtLink class="nav-link" to="/gatepass" active-class="active fw-bold text-primary" @click="isNavOpen = false">Gate Pass</NuxtLink>
             </li>
             <li class="nav-item ms-lg-3">
-              <button @click="toggleDarkMode" class="btn btn-outline-light btn-sm rounded-pill px-3 mt-1 mt-lg-0">
+              <button @click="toggleDarkMode" class="btn btn-outline-secondary btn-sm rounded-pill px-3 mt-1 mt-lg-0">
                 {{ isDarkMode ? '🌙' : '☀️' }} {{ isDarkMode ? 'Dark' : 'Light' }}
               </button>
             </li>
@@ -69,9 +70,11 @@ provide('isDarkMode', isDarkMode)
 
 <style>
 :root {
-  --primary-gradient: linear-gradient(135deg, #4776E6 0%, #8E54E9 100%);
-  --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-  --warning-gradient: linear-gradient(135deg, #f46b45 0%, #eea849 100%);
+  /* Rich Gold Gradient for Buttons and Highlights */
+  --primary-gradient: linear-gradient(135deg, #C5A059 0%, #A67C00 100%);
+  /* Soft Gold for Success/Accents */
+  --success-gradient: linear-gradient(135deg, #D4AF37 0%, #C5A059 100%);
+  --gold-accent: #C5A059;
 }
 
 body.dark-mode {
@@ -129,7 +132,7 @@ body.dark-mode input:focus,
 body.dark-mode select:focus {
   background-color: #333;
   color: #fff;
-  border-color: #4776E6;
+  border-color: #C5A059;
 }
 
 body.dark-mode .navbar-brand {
@@ -137,13 +140,37 @@ body.dark-mode .navbar-brand {
 }
 
 body.dark-mode .btn-outline-primary {
-  color: #4776E6;
-  border-color: #4776E6;
+  color: #C5A059;
+  border-color: #C5A059;
 }
 
 body.dark-mode .btn-outline-primary:hover {
-  background-color: #4776E6;
-  color: #fff;
+  background-color: #C5A059; /* Gold on hover in dark mode */
+  border-color: #C5A059;
+  color: #000;
+}
+
+/* Gold Accents - Adjusted for Luxury Feel */
+.text-primary {
+    color: #997404 !important; /* Dark Gold for text on light bg */
+}
+body.dark-mode .text-primary {
+    color: #D4AF37 !important; /* Lighter Gold for text on dark bg */
+}
+
+.btn-primary {
+    background: var(--primary-gradient);
+    border: none;
+    color: white; 
+    font-weight: 500;
+}
+.btn-primary:hover {
+    background: linear-gradient(135deg, #B08D55 0%, #8E6A00 100%);
+    color: white;
+}
+
+.navbar-light .navbar-nav .nav-link.active {
+    color: #997404 !important; /* Active link gold */
 }
 
 /* Mobile Native Feel Refinements */
@@ -165,6 +192,8 @@ body.dark-mode .btn-outline-primary:hover {
   .btn {
     padding-top: 0.6rem;
     padding-bottom: 0.6rem;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
   }
 }
 </style>
@@ -172,15 +201,15 @@ body.dark-mode .btn-outline-primary:hover {
 <style scoped>
 .navbar {
   transition: all 0.3s ease;
+  backdrop-filter: blur(10px); /* Glassmorphism for modern feel */
 }
 .bg-primary {
   background: var(--primary-gradient) !important;
 }
 .nav-link {
-  transition: opacity 0.2s ease;
+  transition: color 0.2s ease;
 }
 .nav-link.active {
   font-weight: bold;
-  opacity: 1 !important;
 }
 </style>
