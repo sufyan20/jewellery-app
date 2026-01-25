@@ -9,7 +9,7 @@ export default defineNuxtConfig({
   ],
   app: {
     head: {
-      title: 'Diamond Jewelery Calculator',
+      title: 'Al Halat Jewelers Calculator',
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' }
@@ -18,12 +18,27 @@ export default defineNuxtConfig({
   },
   pwa: {
     manifest: {
-      name: 'Jewelary POS & Calculator',
-      short_name: 'JewelaryApp',
-      description: 'Jewelary calculation and inventory management app',
+      name: 'Al Halat Jewelers POS',
+      short_name: 'AlHalat',
+      description: 'Jewelery calculation and inventory management app',
       theme_color: '#4776E6',
       background_color: '#ffffff',
-      display: 'standalone'
+      display: 'standalone',
+      icons: [
+        {
+          src: 'logo.png',
+          sizes: '192x192',
+          type: 'image/png'
+        },
+        {
+          src: 'logo.png',
+          sizes: '512x512',
+          type: 'image/png'
+        }
+      ]
+    },
+    workbox: {
+      navigateFallback: '/'
     }
   },
   runtimeConfig: {

@@ -25,7 +25,7 @@
               </div>
               <div class="col-md-4">
                 <label class="form-label small fw-bold">Customer Name</label>
-                <input v-model="passDetails.customerName" type="text" class="form-control" placeholder="Enter name">
+                <input v-model="passDetails.customerName" type="text" class="form-control py-2" placeholder="Enter name">
               </div>
             </div>
             <button @click="generatePass" class="btn btn-success mt-4 px-4" :disabled="!selectedCalcId || loading">
@@ -36,7 +36,7 @@
         </div>
 
         <!-- PREVIEW -->
-        <div v-if="gatePass" id="gatePassAnchor" class="gate-pass-preview border border-2 border-primary rounded-4 p-4 p-md-5 bg-white shadow-sm mt-4">
+        <div v-if="gatePass" id="gatePassAnchor" class="gate-pass-preview border border-2 border-primary rounded-4 p-3 p-md-5 bg-white shadow-sm mt-4">
           <div class="text-center border-bottom border-2 border-primary pb-4 mb-4">
             <img src="../public/logo.png" style="height: 50px; margin-bottom: 10px;">
             <div class="text-muted small">GATE PASS | ID: {{ gatePass.passNumber }}</div>
@@ -49,7 +49,7 @@
             </div>
             <div class="col-6 text-end">
               <div class="small fw-bold text-uppercase text-muted">Date</div>
-              <div class="fs-5">{{ new Date(gatePass.createdAt).toLocaleDateString() }}</div>
+              <div class="fs-5">{{ new Date(gatePass.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) }}</div>
             </div>
           </div>
 
@@ -72,7 +72,7 @@
                   <td class="text-start fw-bold">{{ colour.name }}</td>
                   <td>{{ colour.qty }}</td>
                   <td v-for="type in allMotiTypes" :key="type">
-                    {{ getLariForType(colour, type) }}
+                    {{ Math.round(getLariForType(colour, type)) }}
                   </td>
                 </tr>
               </tbody>
@@ -81,7 +81,7 @@
                   <td>TOTAL</td>
                   <td>{{ totalSets }}</td>
                   <td v-for="type in allMotiTypes" :key="type">
-                    {{ totalLariByType[type].toFixed(2) }}
+                    {{ Math.round(totalLariByType[type]) }}
                   </td>
                 </tr>
               </tfoot>
@@ -93,18 +93,24 @@
           </div>
 
           <div class="mt-4 no-print text-center">
-            <button @click="printPass" class="btn btn-primary px-5">Print Gate Pass</button>
+            <button @click="printPass" class="btn btn-primary px-5">Print / Save PDF</button>
           </div>
         </div>
       </div>
     </div>
   </div>
+    
+  <!-- Hidden Print Component - Reusing the unified component -->
+  <div class="d-none d-print-block">
+      <GatePassPrint v-if="gatePass" :gatePass="gatePass" />
+  </div>
 </template>
 
 <script setup>
 const isDarkMode = inject('isDarkMode')
+const route = useRoute()
 const { data: calculations } = useFetch('/api/calculations')
-const selectedCalcId = ref('')
+const selectedCalcId = ref(route.query.id || '')
 const loading = ref(false)
 const gatePass = ref(null)
 const passDetails = ref({
@@ -174,7 +180,8 @@ const generatePass = async () => {
 }
 
 const printPass = () => {
-  window.print()
+    // On mobile, this usually opens the system print dialog which includes "Save as PDF" or "Share"
+    window.print()
 }
 </script>
 
@@ -193,45 +200,12 @@ const printPass = () => {
 }
 
 @media print {
-  body * {
-    visibility: hidden;
-  }
-  .gate-pass-preview, .gate-pass-preview * {
-    visibility: visible;
-  }
-  .gate-pass-preview {
-    position: absolute !important;
-    left: 0 !important;
-    top: 0 !important;
-    width: 100% !important;
-    box-shadow: none !important;
-    border: 1px solid #000 !important;
-    background-color: white !important;
-    color: black !important;
-    padding: 20px !important;
-  }
-  .no-print {
-    display: none !important;
-  }
-  .table {
-    border-collapse: collapse !important;
-    width: 100% !important;
-  }
-  .table th, .table td {
-    border: 1px solid #000 !important;
-    color: black !important;
-    padding: 8px !important;
-  }
-  .table-primary {
-    background-color: #f8f9fa !important;
-    color: black !important;
-  }
-  .text-primary { color: black !important; }
-  .text-muted { color: #333 !important; }
+  /* Hide everything except the print component which handles its own visibility via body * visibility: hidden strategy in GatePassPrint.vue */
+  /* However, since GatePassPrint.vue sets body * to hidden, we don't need to do much here except ensure the component is present. */
   
-  h2, .fs-5 {
-    color: black !important;
-    font-weight: bold !important;
+  /* We just strictly hide the main UI container to be sure */
+  .container {
+      display: none !important;
   }
 }
 </style>

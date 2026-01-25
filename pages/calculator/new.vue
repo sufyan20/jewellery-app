@@ -27,7 +27,7 @@
               <div v-if="!calculation.setImageUrl">
                 <div class="display-6 mb-2 opacity-50">📸</div>
                 <label class="form-label d-block fw-bold small mb-2">Set Image</label>
-                <input type="file" @change="handleImageUpload" class="stretched-link opacity-0 position-absolute w-100 h-100 start-0 top-0 cursor-pointer" accept="image/*">
+                <input type="file" @change="handleImageUpload" class="stretched-link opacity-0 position-absolute w-100 h-100 start-0 top-0 cursor-pointer" accept="image/jpeg,image/png,image/webp">
                 <span class="text-muted small">Click or drag image here</span>
               </div>
               <div v-else class="position-relative">
@@ -121,7 +121,7 @@
             🧮 Calculate & Save
           </button>
           <button v-if="results" @click="exportToPDF" class="btn btn-primary px-4">
-            📄 Export as PDF
+            📄 Print / Save PDF
           </button>
           <button @click="resetForm" class="btn btn-outline-secondary px-4">🔄 Reset</button>
         </div>
@@ -134,7 +134,7 @@
             <p class="mb-0 small">Moti Calculation Report</p>
             <hr>
             <div class="d-flex justify-content-between mb-4 mt-2">
-              <span class="small fw-bold">Date: {{ new Date().toLocaleDateString() }}</span>
+              <span class="small fw-bold">Date: {{ new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) }}</span>
               <span class="small fw-bold">Set: {{ results.setName }}</span>
             </div>
             <div v-if="calculation.notes" class="text-start mb-4 p-3 border rounded">
@@ -162,7 +162,7 @@
                       <td class="text-end">{{ moti.lariPerSet }}</td>
                       <td class="text-end">{{ moti.totalLari.toFixed(2) }}</td>
                       <td class="text-end">Rs {{ moti.ratePerLari.toFixed(2) }}</td>
-                      <td class="text-end">Rs {{ moti.motiCost.toFixed(2) }}</td>
+                      <td class="text-end">Rs {{ Math.round(moti.motiCost) }}</td>
                     </tr>
                   </tbody>
                   <tfoot>
@@ -170,11 +170,11 @@
                       <td colspan="2"><strong>Colour Total</strong></td>
                       <td class="text-end"><strong>{{ colour.subtotals.totalLari.toFixed(2) }}</strong></td>
                       <td class="text-end"><strong>Labour</strong></td>
-                      <td class="text-end"><strong>Rs {{ colour.subtotals.labour.toFixed(2) }}</strong></td>
+                      <td class="text-end"><strong>Rs {{ Math.round(colour.subtotals.labour) }}</strong></td>
                     </tr>
                     <tr>
                       <td colspan="4" class="text-end"><strong>Total Cost</strong></td>
-                      <td class="text-end text-primary"><strong>Rs {{ colour.subtotals.total.toFixed(2) }}</strong></td>
+                      <td class="text-end text-primary"><strong>Rs {{ Math.round(colour.subtotals.total) }}</strong></td>
                     </tr>
                   </tfoot>
                 </table>
@@ -196,11 +196,11 @@
                 </div>
                 <div class="col-12 col-md-6 mt-md-0 mt-3">
                   <div class="small opacity-75">Grand Total</div>
-                  <div class="display-6 fw-bold">Rs {{ results.totals.grandTotal.toLocaleString() }}</div>
+                  <div class="display-6 fw-bold">Rs {{ Math.round(results.totals.grandTotal).toLocaleString() }}</div>
                 </div>
               </div>
               <div class="mt-3 pt-3 border-top border-white border-opacity-25 fs-5">
-                Cost per Set: <strong>Rs {{ results.totals.costPerSet.toFixed(2) }}</strong>
+                Cost per Set: <strong>Rs {{ Math.round(results.totals.costPerSet) }}</strong>
               </div>
             </div>
           </div>
@@ -268,7 +268,7 @@ const handleImageUpload = (e) => {
       let width = img.width
       let height = img.height
       const maxWidth = 700
-      const maxHeight = 500
+      const maxHeight = 800
 
       if (width > maxWidth) {
         height = Math.round((height * maxWidth) / width)
@@ -285,7 +285,7 @@ const handleImageUpload = (e) => {
       ctx.drawImage(img, 0, 0, width, height)
       
       // Save as compressed JPEG
-      calculation.value.setImageUrl = canvas.toDataURL('image/jpeg', 0.8)
+      calculation.value.setImageUrl = canvas.toDataURL('image/jpeg', 0.9)
     }
     img.src = event.target.result
   }

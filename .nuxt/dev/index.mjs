@@ -2032,7 +2032,7 @@ const _YUczgxymFBMNJYOVYTn6AmRVoXsFb02BS_CYBTOPSOk = (function(nitro) {
 
 const rootDir = "E:/jewelary-app";
 
-const appHead = {"meta":[{"charset":"utf-8"},{"name":"viewport","content":"width=device-width, initial-scale=1"}],"link":[],"style":[],"script":[],"noscript":[],"title":"Diamond Jewelery Calculator"};
+const appHead = {"meta":[{"charset":"utf-8"},{"name":"viewport","content":"width=device-width, initial-scale=1"}],"link":[],"style":[],"script":[],"noscript":[],"title":"Al Halat Jewelers Calculator"};
 
 const appRootTag = "div";
 
@@ -2133,22 +2133,7 @@ const plugins = [
 _VycZrzKrZoiFO2f6u_bzaWXsW2SEy8Xz9WPxZPMEvF8
 ];
 
-const assets = {
-  "/index.mjs": {
-    "type": "text/javascript; charset=utf-8",
-    "etag": "\"1d810-69fNVBaEPJ1BHR16I+II7c3P70Y\"",
-    "mtime": "2026-01-24T10:58:39.827Z",
-    "size": 120848,
-    "path": "index.mjs"
-  },
-  "/index.mjs.map": {
-    "type": "application/json",
-    "etag": "\"776c4-4zRgSepCg0Swy2Zaq5nHoOzJmNE\"",
-    "mtime": "2026-01-24T10:58:39.827Z",
-    "size": 489156,
-    "path": "index.mjs.map"
-  }
-};
+const assets = {};
 
 function readAsset (id) {
   const serverDir = dirname$1(fileURLToPath(globalThis._importMeta_.url));
@@ -2597,6 +2582,8 @@ async function getIslandContext(event) {
 	return ctx;
 }
 
+const _bHAxv9Meta = null;
+
 const _HBoP3_Meta = null;
 
 const _VnMu5jMeta = null;
@@ -2616,7 +2603,8 @@ const _D0W7R5Meta = null;
 const _toJP4_Meta = null;
 
 const handlersMeta = [
-  { route: "/api/calculations/create", method: "post", meta: _HBoP3_Meta },
+  { route: "/api/calculations/:id", method: "get", meta: _bHAxv9Meta },
+{ route: "/api/calculations/create", method: "post", meta: _HBoP3_Meta },
 { route: "/api/calculations/delete", method: "delete", meta: _VnMu5jMeta },
 { route: "/api/calculations", method: "get", meta: _bjME_cMeta },
 { route: "/api/gatepass/create", method: "post", meta: _ARAI4rMeta },
@@ -2957,6 +2945,7 @@ const _toJP4_ = eventHandler((event) => {
   );
 });
 
+const _lazy_bHAxv9 = () => Promise.resolve().then(function () { return _id__get$1; });
 const _lazy_HBoP3_ = () => Promise.resolve().then(function () { return create_post$3; });
 const _lazy_VnMu5j = () => Promise.resolve().then(function () { return delete_delete$1; });
 const _lazy_bjME_c = () => Promise.resolve().then(function () { return index_get$1; });
@@ -2965,6 +2954,7 @@ const _lazy_CMMjDo = () => Promise.resolve().then(function () { return renderer$
 
 const handlers = [
   { route: '', handler: _cVb9pE, lazy: false, middleware: true, method: undefined },
+  { route: '/api/calculations/:id', handler: _lazy_bHAxv9, lazy: true, middleware: false, method: "get" },
   { route: '/api/calculations/create', handler: _lazy_HBoP3_, lazy: true, middleware: false, method: "post" },
   { route: '/api/calculations/delete', handler: _lazy_VnMu5j, lazy: true, middleware: false, method: "delete" },
   { route: '/api/calculations', handler: _lazy_bjME_c, lazy: true, middleware: false, method: "get" },
@@ -3316,6 +3306,50 @@ const styles$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
 
 const prisma$1 = global.prisma || new PrismaClient();
 global.prisma = prisma$1;
+
+const _id__get = defineEventHandler(async (event) => {
+  const id = getRouterParam(event, "id");
+  if (!id) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: "ID is required"
+    });
+  }
+  try {
+    const calculation = await prisma$1.calculation.findUnique({
+      where: { id },
+      include: {
+        motiRequirements: true,
+        colours: {
+          include: {
+            customMotis: true
+          }
+        },
+        _count: {
+          select: { gatePasses: true }
+        }
+      }
+    });
+    if (!calculation) {
+      throw createError({
+        statusCode: 404,
+        statusMessage: "Calculation not found"
+      });
+    }
+    return calculation;
+  } catch (error) {
+    if (error.statusCode) throw error;
+    throw createError({
+      statusCode: 500,
+      statusMessage: error.message
+    });
+  }
+});
+
+const _id__get$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: _id__get
+}, Symbol.toStringTag, { value: 'Module' }));
 
 const create_post$2 = defineEventHandler(async (event) => {
   const body = await readBody(event);

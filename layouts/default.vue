@@ -5,19 +5,19 @@
         <NuxtLink class="navbar-brand fw-bold d-flex align-items-center" to="/">
           <img src="/logo.png" alt="Logo" class="me-2" style="height: 30px;">
         </NuxtLink>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <button class="navbar-toggler" type="button" @click="isNavOpen = !isNavOpen" :aria-expanded="isNavOpen">
           <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
+        <div class="collapse navbar-collapse" :class="{ 'show': isNavOpen }" id="navbarNav">
           <ul class="navbar-nav ms-auto align-items-center">
             <li class="nav-item">
-              <NuxtLink class="nav-link" to="/calculator/new" active-class="active">Calculator</NuxtLink>
+              <NuxtLink class="nav-link" to="/calculator/new" active-class="active" @click="isNavOpen = false">Calculator</NuxtLink>
             </li>
             <li class="nav-item">
-              <NuxtLink class="nav-link" to="/history" active-class="active">History</NuxtLink>
+              <NuxtLink class="nav-link" to="/history" active-class="active" @click="isNavOpen = false">History</NuxtLink>
             </li>
             <li class="nav-item">
-              <NuxtLink class="nav-link" to="/gatepass" active-class="active">Gate Pass</NuxtLink>
+              <NuxtLink class="nav-link" to="/gatepass" active-class="active" @click="isNavOpen = false">Gate Pass</NuxtLink>
             </li>
             <li class="nav-item ms-lg-3">
               <button @click="toggleDarkMode" class="btn btn-outline-light btn-sm rounded-pill px-3 mt-1 mt-lg-0">
@@ -25,7 +25,7 @@
               </button>
             </li>
             <li class="nav-item ms-lg-2">
-              <NuxtLink class="btn btn-danger btn-sm rounded-pill px-3 mt-1 mt-lg-0" to="/login">Logout</NuxtLink>
+              <NuxtLink class="btn btn-danger btn-sm rounded-pill px-3 mt-1 mt-lg-0" to="/login" @click="isNavOpen = false">Logout</NuxtLink>
             </li>
           </ul>
         </div>
@@ -37,13 +37,14 @@
     </main>
 
     <footer :class="['py-4 text-center small mt-auto no-print', isDarkMode ? 'text-secondary border-top border-secondary' : 'text-muted']">
-      &copy; {{ new Date().getFullYear() }} Diamond Jewelery Calculator App.
+      &copy; {{ new Date().getFullYear() }} Al Halat Jewelers App.
     </footer>
   </div>
 </template>
 
 <script setup>
 const isDarkMode = ref(false)
+const isNavOpen = ref(false)
 
 onMounted(() => {
   const savedMode = localStorage.getItem('darkMode')
