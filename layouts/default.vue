@@ -4,7 +4,7 @@
       <div class="container">
         <NuxtLink class="navbar-brand fw-bold d-flex align-items-center text-primary" to="/">
           <img src="/logo.png" alt="Logo" class="me-2" style="height: 30px;">
-          <span>Al Halat</span>
+          <span>Al Hayat</span>
         </NuxtLink>
         <button class="navbar-toggler" type="button" @click="isNavOpen = !isNavOpen" :aria-expanded="isNavOpen">
           <span class="navbar-toggler-icon"></span>
@@ -38,7 +38,7 @@
     </main>
 
     <footer :class="['py-4 text-center small mt-auto no-print', isDarkMode ? 'text-secondary border-top border-secondary' : 'text-muted']">
-      &copy; {{ new Date().getFullYear() }} Al Halat Jewelers App.
+      &copy; {{ new Date().getFullYear() }} Al Hayat Jewelers App.
     </footer>
   </div>
 </template>

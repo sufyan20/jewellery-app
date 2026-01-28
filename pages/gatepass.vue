@@ -93,7 +93,10 @@
           </div>
 
           <div class="mt-4 no-print text-center">
-            <button @click="printPass" class="btn btn-primary px-5">Print / Save PDF</button>
+            <button @click="printPass" class="btn btn-primary px-5" :disabled="isSharing">
+              <span v-if="isSharing" class="spinner-border spinner-border-sm me-2"></span>
+              Share / Save PDF
+            </button>
           </div>
         </div>
       </div>
@@ -101,12 +104,20 @@
   </div>
     
   <!-- Hidden Print Component - Reusing the unified component -->
+  <!-- We use a separate container for native sharing generation that is not 'display: none' but maybe off-screen if needed, 
+       but for html2pdf it's safest to use the existing hidden one if we can make it visible during generation, 
+       OR just rely on the existing one being d-print-block. 
+       Actually html2pdf needs it rendered. d-none elements have 0 dimensions. 
+       We will use a special class for the capture element that is visible but absolute positioned off screen or z-indexed behind.
+  -->
   <div class="d-none d-print-block">
       <GatePassPrint v-if="gatePass" :gatePass="gatePass" />
   </div>
 </template>
 
 <script setup>
+import { usePdfShare } from '~/composables/usePdfShare'
+
 const isDarkMode = inject('isDarkMode')
 const route = useRoute()
 const { data: calculations } = useFetch('/api/calculations')
@@ -117,6 +128,8 @@ const passDetails = ref({
   passNumber: 'GP-' + Math.floor(Math.random() * 1000).toString().padStart(3, '0'),
   customerName: ''
 })
+
+const { shareOrDownloadPDF, isSharing } = usePdfShare()
 
 const allMotiTypes = computed(() => {
   if (!gatePass.value) return []
@@ -179,9 +192,9 @@ const generatePass = async () => {
   }
 }
 
-const printPass = () => {
-    // On mobile, this usually opens the system print dialog which includes "Save as PDF" or "Share"
-    window.print()
+const printPass = async () => {
+    if (!gatePass.value) return
+    await shareOrDownloadPDF(gatePass.value, 'gatepass', `GatePass-${gatePass.value.passNumber}.pdf`)
 }
 </script>
 
@@ -199,11 +212,12 @@ const printPass = () => {
   border-style: dashed !important;
 }
 
+
 @media print {
   /* Hide everything except the print component which handles its own visibility via body * visibility: hidden strategy in GatePassPrint.vue */
   /* However, since GatePassPrint.vue sets body * to hidden, we don't need to do much here except ensure the component is present. */
   
-  /* We just strictly hide the main UI container to be sure */
+  /* We just strictly hide the main UI container to prevent it showing up in print */
   .container {
       display: none !important;
   }

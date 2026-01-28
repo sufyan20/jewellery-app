@@ -120,14 +120,15 @@
             <span v-if="loading" class="spinner-border spinner-border-sm me-2"></span>
             🧮 Calculate & Save
           </button>
-          <button v-if="results" @click="exportToPDF" class="btn btn-primary px-4">
-            📄 Print / Save PDF
+          <button v-if="results" @click="exportToPDF" class="btn btn-primary px-4" :disabled="isSharing">
+            <span v-if="isSharing" class="spinner-border spinner-border-sm me-2"></span>
+            📄 Share / Save PDF
           </button>
           <button @click="resetForm" class="btn btn-outline-secondary px-4">🔄 Reset</button>
         </div>
 
         <!-- RESULTS -->
-        <div v-if="results" class="results-container">
+        <div v-if="results" id="calculationResults" class="results-container">
           <!-- Print Only Header -->
           <div class="print-header d-none">
             <img src="../public/logo.png" style="height: 60px; margin-bottom: 10px;">
@@ -211,6 +212,8 @@
 </template>
 
 <script setup>
+import { usePdfShare } from '~/composables/usePdfShare'
+
 const isDarkMode = inject('isDarkMode')
 
 const calculation = ref({
@@ -366,8 +369,17 @@ const calculateAndSave = async () => {
   }
 }
 
-const exportToPDF = () => {
-  window.print()
+const { shareOrDownloadPDF, isSharing } = usePdfShare()
+
+const exportToPDF = async () => {
+  if (!results.value) return
+  
+  const pdfData = {
+    ...results.value,
+    setImageUrl: calculation.value.setImageUrl // Include image if present
+  }
+  
+  await shareOrDownloadPDF(pdfData, 'calculation', `Calculation-${results.value.setName || 'New'}.pdf`)
 }
 
 const resetForm = () => {
@@ -398,6 +410,13 @@ const resetForm = () => {
 .border-dashed {
   border-style: dashed !important;
 }
+
+/* Force header visible during JS generation if we add a class to body or container, 
+   but simplistic approach: html2pdf takes current DOM state. 
+   We need to make .print-header visible momentarily? 
+   No, html2pdf respects CSS. The 'd-none' hides it.
+   We need to remove 'd-none' or override it during capture.
+*/
 
 @media print {
   .no-print {

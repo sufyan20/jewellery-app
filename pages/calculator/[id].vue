@@ -13,6 +13,10 @@
       <div class="card-header border-0 bg-transparent pt-4 pb-2 text-center">
          <div class="d-flex justify-content-between align-items-center w-100 position-absolute top-0 start-0 p-3">
              <button @click="$router.back()" class="btn btn-sm btn-outline-secondary">← Back</button>
+              <button @click="exportToPDF" class="btn btn-sm btn-primary" :disabled="isSharing">
+                  <span v-if="isSharing" class="spinner-border spinner-border-sm me-2"></span>
+                  📄 Share PDF
+              </button>
          </div>
         <h2 class="h4 fw-bold mb-1 text-primary">{{ calculation.setName }}</h2>
         <p class="small text-muted mb-0">{{ new Date(calculation.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) }}</p>
@@ -131,6 +135,7 @@
 </template>
 
 <script setup>
+import { usePdfShare } from '~/composables/usePdfShare'
 const route = useRoute()
 const isDarkMode = inject('isDarkMode')
 const { data: calculation, pending, error } = useFetch(`/api/calculations/${route.params.id}`)
@@ -138,10 +143,14 @@ const { data: calculation, pending, error } = useFetch(`/api/calculations/${rout
 // Computed property to re-calculate everything on the client side based on saved data
 // This duplicates logic from new.vue but ensures consistency if we change how things are calculated
 const results = computed(() => {
+    // ... (rest of the results computed logic stays the same)
     if (!calculation.value) return null
     
     const data = calculation.value
     const res = {
+      setName: data.setName,
+      labourPerSet: data.labourPerSet,
+      createdAt: data.createdAt,
       totals: {
         totalSets: 0,
         totalLari: 0,
@@ -165,13 +174,6 @@ const results = computed(() => {
         }
       }
 
-      // Handle custom vs standard motis - DB structure might be slightly different than pure form state
-      // Prisma include returns 'customMotis' (plural) usually, but check schema if needed. 
-      // Based on my view_file of index.get.ts, it is 'customMotis'.
-      // data.motiRequirements is standard.
-      
-      // We need to map the "type" correctly.
-      
       const motisToUse = (colour.customMotis && colour.customMotis.length > 0) ? colour.customMotis : data.motiRequirements
 
       motisToUse.forEach(moti => {
@@ -200,6 +202,17 @@ const results = computed(() => {
     res.totals.costPerSet = res.totals.totalSets > 0 ? res.totals.grandTotal / res.totals.totalSets : 0
     return res
 })
+
+const { shareOrDownloadPDF, isSharing } = usePdfShare()
+
+const exportToPDF = async () => {
+    if (!results.value) return
+    const pdfData = {
+        ...results.value,
+        setImageUrl: calculation.value.setImageUrl
+    }
+    await shareOrDownloadPDF(pdfData, 'calculation', `Calculation-${calculation.value.setName}.pdf`)
+}
 </script>
 
 <style scoped>

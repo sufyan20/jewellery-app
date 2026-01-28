@@ -2,7 +2,7 @@
   <div class="min-vh-100 d-flex align-items-center justify-content-center bg-light">
     <div class="card border-0 shadow-lg rounded-4 overflow-hidden" style="width: 100%; max-width: 400px;">
       <div class="card-header bg-primary text-white p-4 text-center border-0">
-        <h2 class="h4 mb-0 fw-bold">Al Halat Jewelers App</h2>
+        <h2 class="h4 mb-0 fw-bold">Al Hayat Jewelers App</h2>
         <p class="small mb-0 opacity-75">Sign in to continue</p>
       </div>
       <div class="card-body p-4">

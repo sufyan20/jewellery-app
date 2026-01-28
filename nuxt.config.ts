@@ -9,7 +9,7 @@ export default defineNuxtConfig({
   ],
   app: {
     head: {
-      title: 'Al Halat Jewelers Calculator',
+      title: 'Al Hayat Jewelers Calculator',
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' }
@@ -23,8 +23,8 @@ export default defineNuxtConfig({
   pwa: {
     registerType: 'autoUpdate',
     manifest: {
-      name: 'Al Halat Jewelers POS',
-      short_name: 'AlHalat',
+      name: 'Al Hayat Jewelers POS',
+      short_name: 'AlHayat',
       description: 'Jewelery calculation and inventory management app',
       theme_color: '#C5A059',
       background_color: '#ffffff',

@@ -75,23 +75,25 @@
       </div>
       <div class="modal-footer border-top-0">
         <button @click="closeGatePassModal" type="button" class="btn btn-outline-secondary">Cancel</button>
-        <button @click="submitGatePass" type="button" class="btn btn-primary" :disabled="isGenerating">
-            <span v-if="isGenerating" class="spinner-border spinner-border-sm me-2"></span>
-            Generate & Print / Save
+        <button @click="submitGatePass" type="button" class="btn btn-primary" :disabled="isGenerating || isSharing">
+            <span v-if="isGenerating || isSharing" class="spinner-border spinner-border-sm me-2"></span>
+            Share / Save PDF
         </button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Hidden Print Component -->
-<div class="d-none d-print-block">
-    <GatePassPrint v-if="printGatePassData" :gatePass="printGatePassData" />
-</div>
+  <!-- Hidden Print Component (For fallback browser print if needed, though we rely on share mostly now) -->
+  <div class="d-none d-print-block">
+      <GatePassPrint v-if="printGatePassData" :gatePass="printGatePassData" />
+  </div>
 
 </template>
 
 <script setup>
+import { usePdfShare } from '~/composables/usePdfShare'
+
 const isDarkMode = inject('isDarkMode')
 const { data: calculations, pending, error, refresh } = useFetch('/api/calculations')
 
@@ -104,6 +106,8 @@ const gatePassDetails = ref({
     passNumber: '',
     customerName: ''
 })
+
+const { shareOrDownloadPDF, isSharing } = usePdfShare()
 
 const deleteCalculation = async (id) => {
   if (!confirm('Are you sure you want to delete this calculation? This cannot be undone.')) return
@@ -165,16 +169,9 @@ const submitGatePass = async () => {
           }
         })
         
-        // Prepare for printing
-        printGatePassData.value = res
-        
-        // Wait for DOM update then print
+        // Generate and Share PDF
+        await shareOrDownloadPDF(res, 'gatepass', `GatePass-${res.passNumber}.pdf`)
         closeGatePassModal()
-        setTimeout(() => {
-            window.print()
-            // Reset print data after print dialog closes (users might cancel, but data lingering is fine, or clear it after some time)
-            // setTimeout(() => printGatePassData.value = null, 5000)
-        }, 500)
 
     } catch(err) {
         alert('Failed to generate gate pass')
@@ -195,6 +192,7 @@ const submitGatePass = async () => {
 .bg-dark-card {
   background-color: #1e1e1e !important;
 }
+
 
 @media print {
   /* We strictly hide the main UI container to prevent it showing up in print */

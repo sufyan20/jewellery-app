@@ -2032,7 +2032,7 @@ const _YUczgxymFBMNJYOVYTn6AmRVoXsFb02BS_CYBTOPSOk = (function(nitro) {
 
 const rootDir = "E:/jewelary-app";
 
-const appHead = {"meta":[{"charset":"utf-8"},{"name":"viewport","content":"width=device-width, initial-scale=1"}],"link":[{"rel":"icon","type":"image/png","href":"/logo.png"},{"rel":"apple-touch-icon","href":"/logo.png"}],"style":[],"script":[],"noscript":[],"title":"Al Halat Jewelers Calculator"};
+const appHead = {"meta":[{"charset":"utf-8"},{"name":"viewport","content":"width=device-width, initial-scale=1"}],"link":[{"rel":"icon","type":"image/png","href":"/logo.png"},{"rel":"apple-touch-icon","href":"/logo.png"}],"style":[],"script":[],"noscript":[],"title":"Al Hayat Jewelers Calculator"};
 
 const appRootTag = "div";
 
