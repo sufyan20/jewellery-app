@@ -4,7 +4,7 @@
       <div class="spinner-border text-primary" role="status"></div>
     </div>
     <div v-else-if="error" class="alert alert-danger">
-      {{ error.message }}
+      failed: {{ error.message }} 
     </div>
     <div v-else class="card border-0 shadow-lg rounded-4 overflow-hidden" :class="isDarkMode ? 'bg-dark-card border-secondary' : 'bg-white'">
       <div class="card-header border-0 bg-transparent pt-4 pb-2 text-center no-print">
