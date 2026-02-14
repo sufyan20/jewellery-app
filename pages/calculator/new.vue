@@ -131,7 +131,7 @@
         <div v-if="results" id="calculationResults" class="results-container">
           <!-- Print Only Header -->
           <div class="print-header d-none">
-            <img src="../public/logo.png" style="height: 60px; margin-bottom: 10px;">
+            <img src="/logo.png" style="height: 60px; margin-bottom: 10px;">
             <p class="mb-0 small">Moti Calculation Report</p>
             <hr>
             <div class="d-flex justify-content-between mb-4 mt-2">

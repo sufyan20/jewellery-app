@@ -2032,7 +2032,7 @@ const _YUczgxymFBMNJYOVYTn6AmRVoXsFb02BS_CYBTOPSOk = (function(nitro) {
 
 const rootDir = "E:/jewelary-app";
 
-const appHead = {"meta":[{"charset":"utf-8"},{"name":"viewport","content":"width=device-width, initial-scale=1"}],"link":[{"rel":"icon","type":"image/png","href":"/logo.png"},{"rel":"apple-touch-icon","href":"/logo.png"}],"style":[],"script":[],"noscript":[],"title":"Al Hayat Jewelers Calculator"};
+const appHead = {"meta":[{"charset":"utf-8"},{"name":"viewport","content":"width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"},{"name":"apple-mobile-web-app-capable","content":"yes"},{"name":"apple-mobile-web-app-status-bar-style","content":"black-translucent"}],"link":[{"rel":"icon","type":"image/png","href":"/logo.png"},{"rel":"apple-touch-icon","href":"/logo.png"}],"style":[],"script":[],"noscript":[],"title":"Al Hayat Jewelers Calculator"};
 
 const appRootTag = "div";
 
@@ -2590,6 +2590,8 @@ const _VnMu5jMeta = null;
 
 const _bjME_cMeta = null;
 
+const _PtcWxfMeta = null;
+
 const _ARAI4rMeta = null;
 
 const _CMMjDoMeta = null;
@@ -2607,6 +2609,7 @@ const handlersMeta = [
 { route: "/api/calculations/create", method: "post", meta: _HBoP3_Meta },
 { route: "/api/calculations/delete", method: "delete", meta: _VnMu5jMeta },
 { route: "/api/calculations", method: "get", meta: _bjME_cMeta },
+{ route: "/api/calculations/update", method: "put", meta: _PtcWxfMeta },
 { route: "/api/gatepass/create", method: "post", meta: _ARAI4rMeta },
 { route: "/__nuxt_error", method: undefined, meta: _CMMjDoMeta },
 { route: "/__nuxt_island/**", method: undefined, meta: _SxA8c9Meta },
@@ -2949,6 +2952,7 @@ const _lazy_bHAxv9 = () => Promise.resolve().then(function () { return _id__get$
 const _lazy_HBoP3_ = () => Promise.resolve().then(function () { return create_post$3; });
 const _lazy_VnMu5j = () => Promise.resolve().then(function () { return delete_delete$1; });
 const _lazy_bjME_c = () => Promise.resolve().then(function () { return index_get$1; });
+const _lazy_PtcWxf = () => Promise.resolve().then(function () { return update_put$1; });
 const _lazy_ARAI4r = () => Promise.resolve().then(function () { return create_post$1; });
 const _lazy_CMMjDo = () => Promise.resolve().then(function () { return renderer$1; });
 
@@ -2958,6 +2962,7 @@ const handlers = [
   { route: '/api/calculations/create', handler: _lazy_HBoP3_, lazy: true, middleware: false, method: "post" },
   { route: '/api/calculations/delete', handler: _lazy_VnMu5j, lazy: true, middleware: false, method: "delete" },
   { route: '/api/calculations', handler: _lazy_bjME_c, lazy: true, middleware: false, method: "get" },
+  { route: '/api/calculations/update', handler: _lazy_PtcWxf, lazy: true, middleware: false, method: "put" },
   { route: '/api/gatepass/create', handler: _lazy_ARAI4r, lazy: true, middleware: false, method: "post" },
   { route: '/__nuxt_error', handler: _lazy_CMMjDo, lazy: true, middleware: false, method: undefined },
   { route: '/__nuxt_island/**', handler: _SxA8c9, lazy: false, middleware: false, method: undefined },
@@ -3467,6 +3472,86 @@ const index_get = defineEventHandler(async (event) => {
 const index_get$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: index_get
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const update_put = defineEventHandler(async (event) => {
+  const body = await readBody(event);
+  const { id, setName, labourPerSet, setImageUrl, notes, motiRequirements, colours } = body;
+  if (!id) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: "Calculation ID is required"
+    });
+  }
+  try {
+    const updatedCalculation = await prisma$1.$transaction(async (tx) => {
+      const calculation = await tx.calculation.update({
+        where: { id },
+        data: {
+          setName,
+          labourPerSet: parseFloat(labourPerSet) || 0,
+          setImageUrl,
+          notes: notes || ""
+        }
+      });
+      await tx.motiRequirement.deleteMany({
+        where: { calculationId: id }
+      });
+      if (motiRequirements && motiRequirements.length > 0) {
+        await tx.motiRequirement.createMany({
+          data: motiRequirements.map((moti) => ({
+            type: moti.type || "Standard",
+            lariPerSet: parseFloat(moti.lariPerSet) || 0,
+            ratePerLari: parseFloat(moti.ratePerLari) || 0,
+            calculationId: id
+          }))
+        });
+      }
+      await tx.colour.deleteMany({
+        where: { calculationId: id }
+      });
+      for (const colour of colours || []) {
+        await tx.colour.create({
+          data: {
+            name: colour.name || "Unnamed Colour",
+            qty: parseInt(colour.qty) || 0,
+            hasCustom: !!colour.hasCustom,
+            calculationId: id,
+            customMotis: {
+              create: colour.hasCustom && colour.customMoti ? colour.customMoti.map((moti) => ({
+                type: moti.type || "Custom",
+                lariPerSet: parseFloat(moti.lariPerSet) || 0,
+                ratePerLari: parseFloat(moti.ratePerLari) || 0
+              })) : []
+            }
+          }
+        });
+      }
+      return await tx.calculation.findUnique({
+        where: { id },
+        include: {
+          motiRequirements: true,
+          colours: {
+            include: {
+              customMotis: true
+            }
+          }
+        }
+      });
+    });
+    return updatedCalculation;
+  } catch (error) {
+    console.error("Prisma Update Error:", error);
+    throw createError({
+      statusCode: 500,
+      statusMessage: error.message
+    });
+  }
+});
+
+const update_put$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: update_put
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const create_post = defineEventHandler(async (event) => {

@@ -40,6 +40,7 @@
                 </div>
                   <div class="d-flex gap-2 mb-2">
                     <button @click="viewCalculation(calc)" class="btn btn-outline-primary flex-grow-1 py-2">View</button>
+                    <button @click="editCalculation(calc)" class="btn btn-outline-warning flex-grow-1 py-2">Edit</button>
                     <button @click="deleteCalculation(calc.id)" class="btn btn-outline-danger py-2" title="Delete">
                       <span class="d-md-none">Delete</span>
                       <span class="d-none d-md-inline">🗑️</span>
@@ -141,6 +142,10 @@ const calculateGrandTotal = (calc) => {
 const viewCalculation = (calc) => {
   // Navigation to detail view
   navigateTo(`/calculator/${calc.id}`)
+}
+
+const editCalculation = (calc) => {
+  navigateTo(`/calculator/edit/${calc.id}`)
 }
 
 const generateGatePass = (calc) => {

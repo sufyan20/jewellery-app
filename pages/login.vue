@@ -2,8 +2,9 @@
   <div class="min-vh-100 d-flex align-items-center justify-content-center bg-light">
     <div class="card border-0 shadow-lg rounded-4 overflow-hidden" style="width: 100%; max-width: 400px;">
       <div class="card-header bg-primary text-white p-4 text-center border-0">
-        <h2 class="h4 mb-0 fw-bold">Al Hayat Jewelers App</h2>
-        <p class="small mb-0 opacity-75">Sign in to continue</p>
+        <img src="/logo.png" alt="Logo" class="mb-3 rounded-circle bg-white p-1" style="height: 80px; width: 80px; object-fit: cover;">
+        <h2 class="h4 mb-0 fw-bold">Al Hayat Jewelers</h2>
+        <p class="small mb-0 opacity-75">Sign in to POS System</p>
       </div>
       <div class="card-body p-4">
         <div v-if="error" class="alert alert-danger small">{{ error }}</div>

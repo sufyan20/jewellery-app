@@ -12,7 +12,9 @@ export default defineNuxtConfig({
       title: 'Al Hayat Jewelers Calculator',
       meta: [
         { charset: 'utf-8' },
-        { name: 'viewport', content: 'width=device-width, initial-scale=1' }
+        { name: 'viewport', content: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' },
+        { name: 'apple-mobile-web-app-capable', content: 'yes' },
+        { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' }
       ],
       link: [
         { rel: 'icon', type: 'image/png', href: '/logo.png' },
@@ -23,12 +25,13 @@ export default defineNuxtConfig({
   pwa: {
     registerType: 'autoUpdate',
     manifest: {
-      name: 'Al Hayat Jewelers POS',
+      name: 'Al Hayat Jewelers',
       short_name: 'AlHayat',
-      description: 'Jewelery calculation and inventory management app',
+      description: 'Jewelry Calculator and POS for Al Hayat Jewelers',
       theme_color: '#C5A059',
       background_color: '#ffffff',
       display: 'standalone',
+      orientation: 'portrait',
       start_url: '/',
       scope: '/',
       icons: [

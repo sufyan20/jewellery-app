@@ -102,6 +102,15 @@ export const usePdfShare = () => {
         doc.text(`Labour per Set: ${formatCurrency(data.labourPerSet)}`, 25, yPos)
         yPos += 15
 
+        // Notes / Description
+        if (data.notes) {
+            doc.setFontSize(10)
+            doc.setTextColor(50, 50, 50)
+            const splitNotes = doc.splitTextToSize(`Notes: ${data.notes}`, 160)
+            doc.text(splitNotes, 25, yPos)
+            yPos += (splitNotes.length * 5) + 5
+        }
+
         // Timestamp
         doc.setFontSize(10)
         doc.setTextColor(100, 100, 100)
@@ -226,6 +235,30 @@ export const usePdfShare = () => {
         doc.setFont(undefined, 'normal')
         doc.text(data.calculation.setName || 'N/A', 50, yPos)
         yPos += 16
+
+        // Set Image for Gate Pass
+        if (data.calculation.setImageUrl) {
+            const imgUrl = data.calculation.setImageUrl
+            const imgWidth = 40
+            const imgHeight = 40
+            // Place image on the right side
+            yPos = await addImageToDoc(doc, imgUrl, 150, yPos - 20, imgWidth, imgHeight)
+            // If image pushed yPos too far, we might need to adjust, 
+            // but addImageToDoc returns the new yPos. 
+            // However, since we are placing it to the side, we might not want to advance yPos based on image *unless* it's very tall.
+            // Let's just ensure we have enough space below.
+            yPos = Math.max(yPos, yPos + 10)
+        }
+
+        // Notes for Gate Pass
+        if (data.calculation.notes) {
+            doc.setFontSize(10)
+            doc.setFont(undefined, 'normal')
+            doc.setTextColor(80, 80, 80)
+            const splitNotes = doc.splitTextToSize(`Notes: ${data.calculation.notes}`, 160)
+            doc.text(splitNotes, 25, yPos)
+            yPos += (splitNotes.length * 5) + 10
+        }
 
         // Calculate columns for Gate Pass (Lari totals only)
         const types = new Set()

@@ -13,10 +13,15 @@
       <div class="card-header border-0 bg-transparent pt-4 pb-2 text-center">
          <div class="d-flex justify-content-between align-items-center w-100 position-absolute top-0 start-0 p-3">
              <button @click="$router.back()" class="btn btn-sm btn-outline-secondary">← Back</button>
-              <button @click="exportToPDF" class="btn btn-sm btn-primary" :disabled="isSharing">
-                  <span v-if="isSharing" class="spinner-border spinner-border-sm me-2"></span>
-                  📄 Share PDF
-              </button>
+             <div class="d-flex gap-2">
+               <button @click="$router.push(`/calculator/edit/${route.params.id}`)" class="btn btn-sm btn-warning text-white">
+                   ✏️ Edit
+               </button>
+               <button @click="exportToPDF" class="btn btn-sm btn-primary" :disabled="isSharing">
+                   <span v-if="isSharing" class="spinner-border spinner-border-sm me-2"></span>
+                   📄 Share PDF
+               </button>
+             </div>
          </div>
         <h2 class="h4 fw-bold mb-1 text-primary">{{ calculation.setName }}</h2>
         <p class="small text-muted mb-0">{{ new Date(calculation.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) }}</p>

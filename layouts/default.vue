@@ -3,8 +3,8 @@
     <nav :class="['navbar navbar-expand-lg border-bottom py-3 no-print', isDarkMode ? 'navbar-dark bg-dark border-secondary' : 'navbar-light bg-white border-bottom border-warning-subtle']">
       <div class="container">
         <NuxtLink class="navbar-brand fw-bold d-flex align-items-center text-primary" to="/">
-          <img src="/logo.png" alt="Logo" class="me-2" style="height: 30px;">
-          <span>Al Hayat</span>
+          <img src="/logo.png" alt="Logo" class="me-2" style="height: 40px;">
+          <span>Al Hayat Jewelers</span>
         </NuxtLink>
         <button class="navbar-toggler" type="button" @click="isNavOpen = !isNavOpen" :aria-expanded="isNavOpen">
           <span class="navbar-toggler-icon"></span>

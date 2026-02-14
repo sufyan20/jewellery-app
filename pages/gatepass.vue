@@ -38,7 +38,7 @@
         <!-- PREVIEW -->
         <div v-if="gatePass" id="gatePassAnchor" class="gate-pass-preview border border-2 border-primary rounded-4 p-3 p-md-5 bg-white shadow-sm mt-4">
           <div class="text-center border-bottom border-2 border-primary pb-4 mb-4">
-            <img src="../public/logo.png" style="height: 50px; margin-bottom: 10px;">
+            <img src="/logo.png" style="height: 50px; margin-bottom: 10px;">
             <div class="text-muted small">GATE PASS | ID: {{ gatePass.passNumber }}</div>
           </div>
 
@@ -56,6 +56,9 @@
           <div class="mb-4">
             <div class="small fw-bold text-uppercase text-muted border-bottom mb-2">Set Details</div>
             <div class="fs-5 fw-bold">{{ gatePass.calculation.setName }}</div>
+            <div v-if="gatePass.calculation.setImageUrl" class="mt-3 text-center">
+                <img :src="gatePass.calculation.setImageUrl" class="img-fluid rounded shadow-sm" style="max-height: 200px;">
+            </div>
           </div>
 
           <div class="table-responsive">
