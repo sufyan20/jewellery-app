@@ -486,7 +486,6 @@ const resetForm = () => {
     color: black !important;
   }
   
-  /* Reset dark mode for print */
   .bg-dark-card, .bg-secondary {
     background-color: white !important;
     color: black !important;
