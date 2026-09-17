@@ -2133,7 +2133,22 @@ const plugins = [
 _VycZrzKrZoiFO2f6u_bzaWXsW2SEy8Xz9WPxZPMEvF8
 ];
 
-const assets = {};
+const assets = {
+  "/index.mjs": {
+    "type": "text/javascript; charset=utf-8",
+    "etag": "\"1e6a0-+DaP50Y6ZZxMNkxiuYTN83MOOfY\"",
+    "mtime": "2026-09-17T16:05:29.387Z",
+    "size": 124576,
+    "path": "index.mjs"
+  },
+  "/index.mjs.map": {
+    "type": "application/json",
+    "etag": "\"7a467-xG0AuFBOQS4UZFIvd/T2vR6wFgk\"",
+    "mtime": "2026-09-17T16:05:29.388Z",
+    "size": 500839,
+    "path": "index.mjs.map"
+  }
+};
 
 function readAsset (id) {
   const serverDir = dirname$1(fileURLToPath(globalThis._importMeta_.url));
@@ -2588,6 +2603,8 @@ const _HBoP3_Meta = null;
 
 const _VnMu5jMeta = null;
 
+const _UdvGPGMeta = null;
+
 const _bjME_cMeta = null;
 
 const _PtcWxfMeta = null;
@@ -2608,6 +2625,7 @@ const handlersMeta = [
   { route: "/api/calculations/:id", method: "get", meta: _bHAxv9Meta },
 { route: "/api/calculations/create", method: "post", meta: _HBoP3_Meta },
 { route: "/api/calculations/delete", method: "delete", meta: _VnMu5jMeta },
+{ route: "/api/calculations/duplicate", method: "post", meta: _UdvGPGMeta },
 { route: "/api/calculations", method: "get", meta: _bjME_cMeta },
 { route: "/api/calculations/update", method: "put", meta: _PtcWxfMeta },
 { route: "/api/gatepass/create", method: "post", meta: _ARAI4rMeta },
@@ -2951,6 +2969,7 @@ const _toJP4_ = eventHandler((event) => {
 const _lazy_bHAxv9 = () => Promise.resolve().then(function () { return _id__get$1; });
 const _lazy_HBoP3_ = () => Promise.resolve().then(function () { return create_post$3; });
 const _lazy_VnMu5j = () => Promise.resolve().then(function () { return delete_delete$1; });
+const _lazy_UdvGPG = () => Promise.resolve().then(function () { return duplicate_post$1; });
 const _lazy_bjME_c = () => Promise.resolve().then(function () { return index_get$1; });
 const _lazy_PtcWxf = () => Promise.resolve().then(function () { return update_put$1; });
 const _lazy_ARAI4r = () => Promise.resolve().then(function () { return create_post$1; });
@@ -2961,6 +2980,7 @@ const handlers = [
   { route: '/api/calculations/:id', handler: _lazy_bHAxv9, lazy: true, middleware: false, method: "get" },
   { route: '/api/calculations/create', handler: _lazy_HBoP3_, lazy: true, middleware: false, method: "post" },
   { route: '/api/calculations/delete', handler: _lazy_VnMu5j, lazy: true, middleware: false, method: "delete" },
+  { route: '/api/calculations/duplicate', handler: _lazy_UdvGPG, lazy: true, middleware: false, method: "post" },
   { route: '/api/calculations', handler: _lazy_bjME_c, lazy: true, middleware: false, method: "get" },
   { route: '/api/calculations/update', handler: _lazy_PtcWxf, lazy: true, middleware: false, method: "put" },
   { route: '/api/gatepass/create', handler: _lazy_ARAI4r, lazy: true, middleware: false, method: "post" },
@@ -3442,6 +3462,71 @@ const delete_delete = defineEventHandler(async (event) => {
 const delete_delete$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: delete_delete
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const duplicate_post = defineEventHandler(async (event) => {
+  const body = await readBody(event);
+  const { id } = body;
+  if (!id) {
+    throw createError({ statusCode: 400, statusMessage: "ID is required" });
+  }
+  try {
+    const original = await prisma$1.calculation.findUnique({
+      where: { id },
+      include: {
+        motiRequirements: true,
+        colours: {
+          include: { customMotis: true }
+        }
+      }
+    });
+    if (!original) {
+      throw createError({ statusCode: 404, statusMessage: "Calculation not found" });
+    }
+    const duplicate = await prisma$1.calculation.create({
+      data: {
+        setName: `Copy of ${original.setName}`,
+        labourPerSet: original.labourPerSet,
+        setImageUrl: original.setImageUrl,
+        notes: original.notes,
+        motiRequirements: {
+          create: original.motiRequirements.map((m) => ({
+            type: m.type,
+            lariPerSet: m.lariPerSet,
+            ratePerLari: m.ratePerLari
+          }))
+        },
+        colours: {
+          create: original.colours.map((c) => ({
+            name: c.name,
+            qty: c.qty,
+            hasCustom: c.hasCustom,
+            customMotis: {
+              create: c.customMotis.map((cm) => ({
+                type: cm.type,
+                lariPerSet: cm.lariPerSet,
+                ratePerLari: cm.ratePerLari
+              }))
+            }
+          }))
+        }
+      },
+      include: {
+        motiRequirements: true,
+        colours: { include: { customMotis: true } },
+        _count: { select: { gatePasses: true } }
+      }
+    });
+    return duplicate;
+  } catch (error) {
+    if (error.statusCode) throw error;
+    throw createError({ statusCode: 500, statusMessage: error.message });
+  }
+});
+
+const duplicate_post$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: duplicate_post
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const index_get = defineEventHandler(async (event) => {

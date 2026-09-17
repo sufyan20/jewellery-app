@@ -12,6 +12,9 @@ declare module "nitropack/types" {
     '/api/calculations/delete': {
       'delete': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/calculations/delete.delete').default>>>>
     }
+    '/api/calculations/duplicate': {
+      'post': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/calculations/duplicate.post').default>>>>
+    }
     '/api/calculations': {
       'get': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/calculations/index.get').default>>>>
     }

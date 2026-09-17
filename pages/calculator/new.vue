@@ -2,8 +2,8 @@
   <div class="container px-2 py-3 px-md-3 py-md-4">
     <div class="card border-0 shadow-lg rounded-4 overflow-hidden" :class="isDarkMode ? 'bg-dark-card border-secondary' : 'bg-white'">
       <div class="card-header border-0 bg-transparent pt-4 pb-2 text-center no-print">
-        <h2 class="h4 fw-bold mb-1 text-primary">Moti Calculation</h2>
-        <p class="small text-muted">Create a new estimation</p>
+        <h2 class="h4 fw-bold mb-1 text-primary">{{ isPrefilled ? '⧉ Duplicated Record' : 'Moti Calculation' }}</h2>
+        <p class="small text-muted">{{ isPrefilled ? 'Review the copied data and save as a new record' : 'Create a new estimation' }}</p>
       </div>
 
       <div class="card-body p-2 p-md-4">
@@ -215,18 +215,32 @@
 import { usePdfShare } from '~/composables/usePdfShare'
 
 const isDarkMode = inject('isDarkMode')
+const isPrefilled = ref(false)
 
-const calculation = ref({
+const defaultForm = () => ({
   setName: '',
   labourPerSet: 0,
   setImageUrl: null,
   notes: '',
-  motiRequirements: [
-    { type: '', lariPerSet: 0, ratePerLari: 0 }
-  ],
-  colours: [
-    { name: '', qty: 0, hasCustom: false, customMoti: [] }
-  ]
+  motiRequirements: [{ type: '', lariPerSet: 0, ratePerLari: 0 }],
+  colours: [{ name: '', qty: 0, hasCustom: false, customMoti: [] }]
+})
+
+const calculation = ref(defaultForm())
+
+// Check if arriving from a duplicate action
+onMounted(() => {
+  try {
+    const raw = sessionStorage.getItem('duplicatePrefill')
+    if (raw) {
+      const prefill = JSON.parse(raw)
+      calculation.value = prefill
+      isPrefilled.value = true
+      sessionStorage.removeItem('duplicatePrefill')
+    }
+  } catch (e) {
+    // ignore parse errors
+  }
 })
 
 const results = ref(null)
@@ -384,14 +398,8 @@ const exportToPDF = async () => {
 
 const resetForm = () => {
   if (confirm('Are you sure you want to reset?')) {
-    calculation.value = {
-      setName: '',
-      labourPerSet: 0,
-      setImageUrl: null,
-      notes: '',
-      motiRequirements: [{ type: '', lariPerSet: 0, ratePerLari: 0 }],
-      colours: [{ name: '', qty: 0, hasCustom: false, customMoti: [] }]
-    }
+    calculation.value = defaultForm()
+    isPrefilled.value = false
     results.value = null
   }
 }
